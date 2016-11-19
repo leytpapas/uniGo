@@ -35,7 +35,7 @@ public class Parser {
 
         // 1. Send a "GET" request, so that you can extract the form's data.
         String page = http.GetPageContent(url);
-        String postParams = http.getFormParams(page, "aptsaous", "iNFUTH2012");
+        String postParams = http.getFormParams(page, "aptsaous", "enterYourPassword");
 
         // 2. Construct above post's content and then send a POST request for
         // authentication
