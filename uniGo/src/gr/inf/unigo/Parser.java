@@ -37,6 +37,12 @@ public class Parser {
         String page = http.GetPageContent(url);
         String postParams = http.getFormParams(page, "aptsaous", "enterYourPassword");
 
+        //
+        //
+        //
+        //
+        // test
+
         // 2. Construct above post's content and then send a POST request for
         // authentication
         http.sendPost(url, postParams);
