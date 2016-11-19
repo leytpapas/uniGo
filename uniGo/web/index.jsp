@@ -11,6 +11,6 @@
     <title></title>
   </head>
   <body>
-        Esvisa tous bathmous sas apto eclass. giati leuteri?
+        Esvisa tous bathmous sas apto eclass. giati leuteri? Giati eimai aytos pou eimai kai kserw poios eimai
   </body>
 </html>
