@@ -8,9 +8,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
-    <title>EVALA TITLO GUYS</title>
+    <title></title>
   </head>
   <body>
-
+        Esvisa ton titlo, prosthesa body.
   </body>
 </html>
