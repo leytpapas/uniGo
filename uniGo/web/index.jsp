@@ -12,7 +12,6 @@
     <title></title>
   </head>
   <body>
-   uniGo
-  <% Student student = new Student(); out.println( student.toString() ); %>
+   uniGo ${user} ${passwd}
   </body>
 </html>

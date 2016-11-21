@@ -16,6 +16,9 @@ public class LoginServlet extends HttpServlet
 
         RequestDispatcher view = req.getRequestDispatcher( "index.jsp" );
 
+        req.setAttribute( "user", uid );
+        req.setAttribute( "passwd", passwd );
+
         view.forward( req, resp );
     }
 }

@@ -21,7 +21,7 @@ public class Parser
     private List<String> cookies;
     private HttpsURLConnection conn;
 
-    public static void main( String[] args ) throws Exception
+    public void parseUniversity( String userName, String password ) throws Exception
     {
 
         String loginUrl = "https://euniversity.uth.gr/unistudent/login.asp";
@@ -32,19 +32,19 @@ public class Parser
         CookieHandler.setDefault( new CookieManager() ); // make sure cookies are turned on
 
         String page = http.GetPageContent( loginUrl ); // 1. Send a "GET" request, so that you can extract the form's data.
-        String postParams = http.getFormParams( page, "aptsaous", "iNFUTH2012" );
+        String postParams = http.getFormParams( page, userName, password );
 
         http.sendPost( loginUrl, postParams ); // 2. Construct above post's content and then send a POST request for authentication
 
         //String result = http.GetPageContent( url ); // 3. success then go to the student details page.
         String result = http.GetPageContent( gradesUrl );
-        getStudentGrades( gradesUrl );
+        getStudentGrades( result );
     }
 
     public static String getStudentGrades( String html ) throws IOException
     {
 
-        Document doc = Jsoup.connect(html).get();
+        Document doc = Jsoup.parse( html );
 
         Elements rows = doc.getElementsByClass("topBorderLight");
         Elements rows2= doc.getElementsByClass("redFonts");
