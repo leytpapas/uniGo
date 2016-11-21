@@ -1,3 +1,4 @@
+<%@ page import="gr.inf.unigo.Student" %>
 <%--
   Created by IntelliJ IDEA.
   User: aptsaous
@@ -12,5 +13,6 @@
   </head>
   <body>
    uniGo
+  <% Student student = new Student(); student.toString(); %>
   </body>
 </html>

@@ -14,6 +14,7 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,24 +28,17 @@ public class Parser
     {
 
         String loginUrl = "https://euniversity.uth.gr/unistudent/login.asp";
-//        String gmail = "https://euniversity.uth.gr/unistudent/studentMain.asp";
 
         Parser http = new Parser();
 
         CookieHandler.setDefault( new CookieManager() ); // make sure cookies are turned on
 
+        String page = http.GetPageContent( loginUrl ); // 1. Send a "GET" request, so that you can extract the form's data.
+        String postParams = http.getFormParams( page, "aptsaous", "iNFUTH2012" );
 
-        // 1. Send a "GET" request, so that you can extract the form's data.
-        String page = http.GetPageContent( loginUrl );
-        String postParams = http.getFormParams( page, "aptsaous", "YOUR_PASSWD" );
+        http.sendPost( loginUrl, postParams ); // 2. Construct above post's content and then send a POST request for authentication
 
-        // 2. Construct above post's content and then send a POST request for
-        // authentication
-        http.sendPost( loginUrl, postParams );
-
-        // 3. success then go to gmail.
-//        String result = http.GetPageContent( gmail );
-//        System.out.println( result );
+        //String result = http.GetPageContent( url ); // 3. success then go to the student details page.
     }
 
     private void sendPost( String loginUrl, String postParams ) throws Exception
@@ -53,7 +47,6 @@ public class Parser
         URL obj = new URL( loginUrl );
         conn = ( HttpsURLConnection ) obj.openConnection();
 
-//        POST /unistudent/login.asp HTTP/1.1
         // Acts like a browser
         conn.setInstanceFollowRedirects(true);
         conn.setUseCaches( false );
@@ -69,7 +62,7 @@ public class Parser
         }
         conn.setRequestProperty( "Connection", "keep-alive" );
         conn.setRequestProperty( "Referer", "https://euniversity.uth.gr/unistudent/login.asp" );
-        conn.setRequestProperty( "Content-Type", " application/x-www-form-urlencoded" );
+        conn.setRequestProperty( "Content-Type", " application/x-www-form-urlencoded; charset=utf-8" );
         conn.setRequestProperty( "Content-Length", Integer.toString( postParams.length() ) );
 
         conn.setDoOutput( true );
@@ -94,12 +87,15 @@ public class Parser
         {
             response.append( inputLine + "\n" );
         }
+
         in.close();
-//        System.out.println( response.toString() );
 
-        responseCode = conn.getResponseCode();
+        byte[] defaultBytes = response.toString().getBytes();
 
-        getStudentDetails(  response.toString() );
+        String html = new String(defaultBytes, "windows-1253");
+
+
+        getStudentDetails(  html );
     }
 
     private String GetPageContent( String url ) throws Exception
@@ -115,8 +111,8 @@ public class Parser
 
         // act like a browser
         conn.setRequestProperty( "User-Agent", USER_AGENT );
-        conn.setRequestProperty( "Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" );
-        conn.setRequestProperty( "Accept-Language", "en-US,en;q=0.5" );
+        conn.setRequestProperty( "Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8; charset=utf-8" );
+        conn.setRequestProperty( "Accept-Language", "el-GR,el;q=0.8" );
         if ( cookies != null )
         {
             for ( String cookie : this.cookies )
@@ -148,14 +144,20 @@ public class Parser
     public String getStudentDetails( String html )
     {
         Document doc = Jsoup.parse( html );
+        Student student = new Student();
 
-        // Google form id
-        Element loginform = doc.getElementById( "subheader" );
+        Elements elements = doc.select( "tr [height=20]" );
 
-        loginform.html();
-        Elements el = loginform.getElementsByTag( "span" );
-        System.out.println( "Your student id is: " + el.first().html() );
-//        loginform.children().;
+        Element studentIDTag = doc.getElementById( "subheader" );
+        student.setFirstName( elements.first().html() );
+        System.out.println( elements.first() );
+        Elements studentIDinnerTag = studentIDTag.getElementsByTag( "span" );
+        String str = studentIDinnerTag.first().html();
+        String lastName =  elements.first().child( 1 ).html();
+        student.setStudentID( Integer.parseInt( str.substring( str.indexOf( "(" ) + 1, str.indexOf( ")" ) ) ) );
+        student.setLastName( lastName );
+        System.out.println( "Your student id is: " + student.getStudentID() + "\nYour last name is: " + student.getLastName() );
+
         return "ok";
     }
 
