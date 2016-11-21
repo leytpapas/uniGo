@@ -6,10 +6,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.URL;
@@ -28,6 +25,7 @@ public class Parser
     {
 
         String loginUrl = "https://euniversity.uth.gr/unistudent/login.asp";
+        String gradesUrl= "https://euniversity.uth.gr/unistudent/stud_CResults.asp";
 
         Parser http = new Parser();
 
@@ -39,6 +37,44 @@ public class Parser
         http.sendPost( loginUrl, postParams ); // 2. Construct above post's content and then send a POST request for authentication
 
         //String result = http.GetPageContent( url ); // 3. success then go to the student details page.
+        String result = http.GetPageContent( gradesUrl );
+        getStudentGrades( gradesUrl );
+    }
+
+    public static String getStudentGrades( String html ) throws IOException
+    {
+
+        Document doc = Jsoup.connect(html).get();
+
+        Elements rows = doc.getElementsByClass("topBorderLight");
+        Elements rows2= doc.getElementsByClass("redFonts");
+
+        ArrayList<String> gradesArray = new ArrayList<String>();
+        ArrayList<String> lessonsArray = new ArrayList<String>();
+
+        for(Element row1: rows2) {
+            String grade = row1.getElementsByTag("span").first().ownText();
+
+            if (!grade.equals("")) {
+
+                gradesArray.add(grade);
+            }
+        }
+
+
+        for(Element row : rows) {
+
+            String lesson = row.getElementsByTag("td").first().text();
+            if(row.hasAttr("colspan")) {
+
+                lessonsArray.add(lesson);
+            }
+        }
+        for(int i = 0; i < lessonsArray.size(); i++) {
+            System.out.print("Lesson: "+ lessonsArray.get(i)+"\n");
+            System.out.println("Grade: "+ gradesArray.get(i));
+        }
+        return "ok";
     }
 
     private void sendPost( String loginUrl, String postParams ) throws Exception

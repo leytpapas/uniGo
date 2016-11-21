@@ -13,6 +13,6 @@
   </head>
   <body>
    uniGo
-  <% Student student = new Student(); student.toString(); %>
+  <% Student student = new Student(); out.println( student.toString() ); %>
   </body>
 </html>

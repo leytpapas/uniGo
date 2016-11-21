@@ -39,6 +39,6 @@ public class Student
     @Override
     public String toString()
     {
-        return studentID + " " + lastName;
+        return "Student ID: " + studentID + " " + lastName;
     }
 }
