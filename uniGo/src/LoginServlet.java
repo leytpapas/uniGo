@@ -14,10 +14,10 @@ public class LoginServlet extends HttpServlet
         String uid = req.getParameter( "uid" );
         String passwd = req.getParameter( "passwd" );
 
-        RequestDispatcher view = req.getRequestDispatcher( "index.jsp" );
-
         req.setAttribute( "user", uid );
         req.setAttribute( "passwd", passwd );
+
+        RequestDispatcher view = req.getRequestDispatcher( "index.jsp" );
 
         view.forward( req, resp );
     }

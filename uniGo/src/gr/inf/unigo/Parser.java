@@ -20,25 +20,36 @@ public class Parser
     private final String USER_AGENT = "Mozilla/5.0";
     private List<String> cookies;
     private HttpsURLConnection conn;
+    public String grades;
 
-    public void parseUniversity( String userName, String password ) throws Exception
+    public String parseUniversity( String userName, String password )
     {
 
         String loginUrl = "https://euniversity.uth.gr/unistudent/login.asp";
         String gradesUrl= "https://euniversity.uth.gr/unistudent/stud_CResults.asp";
 
-        Parser http = new Parser();
+//        Parser http = new Parser();
 
         CookieHandler.setDefault( new CookieManager() ); // make sure cookies are turned on
 
-        String page = http.GetPageContent( loginUrl ); // 1. Send a "GET" request, so that you can extract the form's data.
-        String postParams = http.getFormParams( page, userName, password );
+        try
+        {
+            String page = GetPageContent( loginUrl ); // 1. Send a "GET" request, so that you can extract the form's data.
+            String postParams = getFormParams( page, userName, password );
 
-        http.sendPost( loginUrl, postParams ); // 2. Construct above post's content and then send a POST request for authentication
+            sendPost( loginUrl, postParams ); // 2. Construct above post's content and then send a POST request for authentication
 
-        //String result = http.GetPageContent( url ); // 3. success then go to the student details page.
-        String result = http.GetPageContent( gradesUrl );
-        getStudentGrades( result );
+            //String result = http.GetPageContent( url ); // 3. success then go to the student details page.
+            String result = GetPageContent( gradesUrl );
+            grades =  getStudentGrades( result );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            return e.toString();
+        }
+
+        return "ok";
     }
 
     public static String getStudentGrades( String html ) throws IOException
@@ -71,7 +82,7 @@ public class Parser
             }
         }
         for(int i = 0; i < lessonsArray.size(); i++) {
-            System.out.print("Lesson: "+ lessonsArray.get(i)+"\n");
+            System.out.print( "Lesson: " + lessonsArray.get( i ) + "\n" );
             System.out.println("Grade: "+ gradesArray.get(i));
         }
         return "ok";
@@ -194,7 +205,7 @@ public class Parser
         student.setLastName( lastName );
         System.out.println( "Your student id is: " + student.getStudentID() + "\nYour last name is: " + student.getLastName() );
 
-        return "ok";
+        return student.toString();
     }
 
     public String getFormParams( String html, String username, String password ) throws UnsupportedEncodingException

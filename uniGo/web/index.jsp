@@ -1,4 +1,5 @@
 <%@ page import="gr.inf.unigo.Student" %>
+<%@ page import="gr.inf.unigo.Parser" %>
 <%--
   Created by IntelliJ IDEA.
   User: aptsaous
@@ -12,6 +13,30 @@
     <title></title>
   </head>
   <body>
-   uniGo ${user} ${passwd}
+  DEMO
+  <%
+    Parser parser = new Parser();
+    try
+    {
+      String user = request.getAttribute( "user" ).toString();
+      String passwd = request.getAttribute( "passwd" ).toString();
+
+      out.println( "UserName: " + user + " Password: " + passwd );
+      out.println("Testing..");
+
+      String str =  parser.parseUniversity(  user, passwd );
+
+      out.println( parser.grades );
+      out.println("Testing..2");
+      out.println( str );
+    }
+    catch ( Exception e )
+    {
+      e.printStackTrace();
+    }
+
+    out.println( );
+
+  %>
   </body>
 </html>
