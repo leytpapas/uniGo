@@ -1,11 +1,5 @@
 package gr.inf.unigo;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -127,31 +121,31 @@ public class SSLDemo
         return builder.toString();
     }
 
-    public String getHtml()
-    {
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpGet httpGet = new HttpGet( "https://10.64.4.64/unistudent" );
-        httpGet.addHeader( "Host", "euniversity.uth.gr" );
-        httpGet.addHeader( "User-Agent", "curl/7.49.1" );
-        httpGet.addHeader( "Accept", "*/*" );
-        System.out.println( Arrays.toString( httpGet.getAllHeaders() ) );
-
-        HttpResponse response = null;
-        try
-        {
-            response = client.execute( httpGet );
-            HttpEntity entity = response.getEntity();
-            String responseString = EntityUtils.toString( entity, "Windows-1253" );
-            return (responseString);
-        }
-        catch ( IOException e )
-        {
-            e.printStackTrace();
-            return e.toString();
-        }
-
-
-
-
-    }
+//    public String getHtml()
+//    {
+//        HttpClient client = HttpClientBuilder.create().build();
+//        HttpGet httpGet = new HttpGet( "https://10.64.4.64/unistudent" );
+//        httpGet.addHeader( "Host", "euniversity.uth.gr" );
+//        httpGet.addHeader( "User-Agent", "curl/7.49.1" );
+//        httpGet.addHeader( "Accept", "*/*" );
+//        System.out.println( Arrays.toString( httpGet.getAllHeaders() ) );
+//
+//        HttpResponse response = null;
+//        try
+//        {
+//            response = client.execute( httpGet );
+//            HttpEntity entity = response.getEntity();
+//            String responseString = EntityUtils.toString( entity, "Windows-1253" );
+//            return (responseString);
+//        }
+//        catch ( IOException e )
+//        {
+//            e.printStackTrace();
+//            return e.toString();
+//        }
+//
+//
+//
+//
+//    }
 }

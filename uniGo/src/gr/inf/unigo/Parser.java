@@ -21,12 +21,18 @@ public class Parser
     private List<String> cookies;
     private HttpsURLConnection conn;
     public String grades;
+    public String [][] Urls= new String[][] {
+            {"https://10.64.4.64:443/unistudent/","https://10.64.4.64/unistudent/stud_CResults.asp"},
+            {"https://www.e-ce.uth.gr/wp-login.php", "https://www.e-ce.uth.gr/studies/undergraduate/fall-timetable/week/"},
+            {}
+            };
 
-    public String parseUniversity( String userName, String password )
+
+    public String parseUniversity( String userName, String password ,int x)
     {
 
-        String loginUrl = "https://10.64.4.64:443/unistudent/studentMain.asp";
-        String gradesUrl= "https://10.64.4.64/unistudent/stud_CResults.asp";
+        String loginUrl = Urls[x][0];
+        String gradesUrl= Urls[x][1];
         String page;
 
 //        Parser http = new Parser();
@@ -35,14 +41,14 @@ public class Parser
 
         try
         {
-             page = GetPageContent( loginUrl ); // 1. Send a "GET" request, so that you can extract the form's data.
-//            String postParams = getFormParams( page, userName, password );
-//
-//            sendPost( loginUrl, postParams ); // 2. Construct above post's content and then send a POST request for authentication
-//
-//            //String result = http.GetPageContent( url ); // 3. success then go to the student details page.
-//            String result = GetPageContent( gradesUrl );
-//            grades =  getStudentGrades( result );
+            page = GetPageContent( loginUrl ); // 1. Send a "GET" request, so that you can extract the form's data.
+            String postParams = getFormParams( page, userName, password );
+            //System.out.println("DONE");
+            sendPost( loginUrl, postParams ); // 2. Construct above post's content and then send a POST request for authentication
+
+            /*String result = http.GetPageContent( url ); // 3. success then go to the student details page.
+            String result = GetPageContent( gradesUrl );
+            grades =  getStudentGrades( result );*/
         }
         catch ( Exception e )
         {
@@ -93,13 +99,14 @@ public class Parser
     {
 
         URL obj = new URL( loginUrl );
+
         conn = ( HttpsURLConnection ) obj.openConnection();
 
         // Acts like a browser
         conn.setInstanceFollowRedirects(true);
         conn.setUseCaches( false );
         conn.setRequestMethod( "POST" );
-        conn.setRequestProperty( "Host", "euniversity.uth.gr" );
+        conn.setRequestProperty( "Host", "e-ce.uth.gr" );
         conn.setRequestProperty( "User-Agent", USER_AGENT );
         conn.setRequestProperty( "Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" );
         conn.setRequestProperty( "Accept-Language", "el-GR,el;q=0.8" );
@@ -140,10 +147,10 @@ public class Parser
 
         byte[] defaultBytes = response.toString().getBytes();
 
-        String html = new String(defaultBytes, "windows-1253");
+        String html = new String(defaultBytes, "UTF-8");
 
-
-        getStudentDetails(  html );
+        //System.out.println(conn.getResponseMessage());
+//        getStudentDetails(  html );
     }
 
     private String GetPageContent( String url ) throws Exception
@@ -151,7 +158,6 @@ public class Parser
 
         URL obj = new URL( url );
         conn = ( HttpsURLConnection ) obj.openConnection();
-        conn.connect();
         System.out.println("Conn ok");
         // default is GET
         conn.setRequestMethod( "GET" );
@@ -168,9 +174,9 @@ public class Parser
                 conn.addRequestProperty( "Cookie", cookie.split( ";", 1 )[0] );
             }
         }
-        int responseCode =0;// = conn.getResponseCode();
+        int responseCode = conn.getResponseCode();
         System.out.println( "\nSending 'GET' request to URL : " + url );
-        System.out.println( "Response Code : " + responseCode + " message: " + conn.getResponseMessage() );
+        System.out.println( "Response Code : " + responseCode + " message: "  );
 
         BufferedReader in = new BufferedReader( new InputStreamReader( conn.getInputStream() ) );
         String inputLine;
@@ -182,6 +188,7 @@ public class Parser
         }
         in.close();
 
+        System.out.println(conn.getResponseMessage());
         // Get the response cookies
         setCookies( conn.getHeaderFields().get( "Set-Cookie" ) );
 
@@ -225,9 +232,9 @@ public class Parser
             String key = inputElement.attr( "name" );
             String value = inputElement.attr( "value" );
 
-            if ( key.equals( "userName" ) )
+            if ( key.equals( "userName" ) || key.equals( "user_login" ) || key.equals(" "))
                 value = username;
-            else if ( key.equals( "pwd" ) )
+            else if ( key.equals( "pwd" ) || key.equals( "user_pass") || key.equals(" ") )
                 value = password;
             paramList.add( key + "=" + URLEncoder.encode( value, "UTF-8" ) );
         }
