@@ -811,14 +811,29 @@ public class Parser
         return null;
     }
 
+    public String parseDepartment( String userName, String password ) throws Exception
+    {
+        String loginUrl = "https://www.e-ce.uth.gr/";
+        String page;
+
+        CookieHandler.setDefault( new CookieManager() ); // make sure cookies are turned on
+
+        page = GetPageContent( loginUrl ); // 1. Send a "GET" request, so that you can extract the form's data.
+
+
+        byte[] defaultBytes = page.toString().getBytes();
+
+        String html = new String(defaultBytes, "utf-8");
+
+        return html;
+    }
+
     public String parseUniversity( String userName, String password ,int x)
     {
 
         String loginUrl = Urls[x][0];
         String gradesUrl= Urls[x][1];
         String page;
-
-//        Parser http = new Parser();
 
         CookieHandler.setDefault( new CookieManager() ); // make sure cookies are turned on
 
@@ -886,7 +901,7 @@ public class Parser
         conn = ( HttpsURLConnection ) obj.openConnection();
 
         // Acts like a browser
-        conn.setInstanceFollowRedirects(true);
+        conn.setInstanceFollowRedirects( true );
         conn.setUseCaches( false );
         conn.setRequestMethod( "POST" );
         conn.setRequestProperty( "Host", "e-ce.uth.gr" );
@@ -899,7 +914,6 @@ public class Parser
             conn.addRequestProperty( "Cookie", cookie.split( ";", 1 )[0] );
         }
         conn.setRequestProperty( "Connection", "keep-alive" );
-        conn.setRequestProperty( "Referer", "https://euniversity.uth.gr/unistudent/login.asp" );
         conn.setRequestProperty( "Content-Type", " application/x-www-form-urlencoded; charset=utf-8" );
         conn.setRequestProperty( "Content-Length", Integer.toString( postParams.length() ) );
 
@@ -941,15 +955,20 @@ public class Parser
 
         URL obj = new URL( url );
         conn = ( HttpsURLConnection ) obj.openConnection();
-        System.out.println("Conn ok");
+
         // default is GET
         conn.setRequestMethod( "GET" );
         conn.setUseCaches( false );
 
-        // act like a browser
+        conn.setRequestProperty( "Host", "www.e-ce.uth.gr" );
+        conn.setRequestProperty( "Connection", "keep-alive" );
+        conn.setRequestProperty( "Cache-Control", "max-age=0" );
         conn.setRequestProperty( "User-Agent", USER_AGENT );
-        conn.setRequestProperty( "Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8; charset=utf-8" );
+        conn.setRequestProperty( "Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8;charset=utf-8" );
+        conn.setRequestProperty( "Referer", "https://www.e-ce.uth.gr/" );
+        conn.setRequestProperty( "Accept-Encoding", "gzip, deflate, sdch, br" );
         conn.setRequestProperty( "Accept-Language", "el-GR,el;q=0.8" );
+
         if ( cookies != null )
         {
             for ( String cookie : this.cookies )
@@ -957,21 +976,24 @@ public class Parser
                 conn.addRequestProperty( "Cookie", cookie.split( ";", 1 )[0] );
             }
         }
+
         int responseCode = conn.getResponseCode();
+
         System.out.println( "\nSending 'GET' request to URL : " + url );
         System.out.println( "Response Code : " + responseCode + " message: "  );
 
         BufferedReader in = new BufferedReader( new InputStreamReader( conn.getInputStream() ) );
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ( ( inputLine = in.readLine() ) != null )
         {
             response.append( inputLine + "\n" );
+            System.out.println( inputLine );
         }
+
         in.close();
 
-        System.out.println(conn.getResponseMessage());
         // Get the response cookies
         setCookies( conn.getHeaderFields().get( "Set-Cookie" ) );
 
