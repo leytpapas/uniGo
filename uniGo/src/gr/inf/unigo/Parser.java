@@ -25,23 +25,23 @@ public class Parser
     public String parseUniversity( String userName, String password )
     {
 
-        String loginUrl = "https://euniversity.uth.gr/unistudent/login.asp";
-        String gradesUrl= "https://euniversity.uth.gr/unistudent/stud_CResults.asp";
-
+        String loginUrl = "https://10.64.4.64:443/unistudent/studentMain.asp";
+        String gradesUrl= "https://10.64.4.64/unistudent/stud_CResults.asp";
+        String page;
 //        Parser http = new Parser();
 
         CookieHandler.setDefault( new CookieManager() ); // make sure cookies are turned on
 
         try
         {
-            String page = GetPageContent( loginUrl ); // 1. Send a "GET" request, so that you can extract the form's data.
-            String postParams = getFormParams( page, userName, password );
-
-            sendPost( loginUrl, postParams ); // 2. Construct above post's content and then send a POST request for authentication
-
-            //String result = http.GetPageContent( url ); // 3. success then go to the student details page.
-            String result = GetPageContent( gradesUrl );
-            grades =  getStudentGrades( result );
+             page = GetPageContent( loginUrl ); // 1. Send a "GET" request, so that you can extract the form's data.
+//            String postParams = getFormParams( page, userName, password );
+//
+//            sendPost( loginUrl, postParams ); // 2. Construct above post's content and then send a POST request for authentication
+//
+//            //String result = http.GetPageContent( url ); // 3. success then go to the student details page.
+//            String result = GetPageContent( gradesUrl );
+//            grades =  getStudentGrades( result );
         }
         catch ( Exception e )
         {
@@ -49,7 +49,7 @@ public class Parser
             return e.toString();
         }
 
-        return "ok";
+        return page;
     }
 
     public static String getStudentGrades( String html ) throws IOException
@@ -150,10 +150,10 @@ public class Parser
 
         URL obj = new URL( url );
         conn = ( HttpsURLConnection ) obj.openConnection();
-
+        conn.connect();
+        System.out.println("Conn ok");
         // default is GET
         conn.setRequestMethod( "GET" );
-
         conn.setUseCaches( false );
 
         // act like a browser
@@ -167,7 +167,7 @@ public class Parser
                 conn.addRequestProperty( "Cookie", cookie.split( ";", 1 )[0] );
             }
         }
-        int responseCode = conn.getResponseCode();
+        int responseCode =0;// = conn.getResponseCode();
         System.out.println( "\nSending 'GET' request to URL : " + url );
         System.out.println( "Response Code : " + responseCode + " message: " + conn.getResponseMessage() );
 

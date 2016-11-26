@@ -1,5 +1,5 @@
 <%@ page import="gr.inf.unigo.Student" %>
-<%@ page import="gr.inf.unigo.Parser" %>
+<%@ page import="gr.inf.unigo.SSLDemo" %>
 <%--
   Created by IntelliJ IDEA.
   User: aptsaous
@@ -15,18 +15,20 @@
   <body>
   DEMO
   <%
-    Parser parser = new Parser();
+    //Parser parser = new Parser();
     try
     {
+      SSLDemo sslDemo = new SSLDemo();
+
       String user = request.getAttribute( "user" ).toString();
       String passwd = request.getAttribute( "passwd" ).toString();
 
       out.println( "UserName: " + user + " Password: " + passwd );
       out.println("Testing..");
 
-      String str =  parser.parseUniversity(  user, passwd );
-
-      out.println( parser.grades );
+      //String str =  parser.parseUniversity(  user, passwd );
+      String str = sslDemo.getHtml();
+      //out.println( parser.grades );
       out.println("Testing..2");
       out.println( str );
     }
