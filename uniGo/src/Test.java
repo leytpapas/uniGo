@@ -15,8 +15,12 @@ public class Test
     public static void main( String[] args ) throws IOException
     {
         Parser parse = new Parser();
+
+        parse.getWeeklySchedule();
+
         parse.parseUniversity("elena","%el16619",1);
 //
+
 
     }
 }
