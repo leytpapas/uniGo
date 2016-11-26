@@ -771,6 +771,7 @@ public class Parser
             Course course = new Course( courseName, instructor );
             boolean found = false;
 
+
             if ( courses.isEmpty() )
             {
                 course.addCourseInfo( courseInfo );
