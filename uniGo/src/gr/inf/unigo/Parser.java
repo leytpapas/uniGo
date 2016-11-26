@@ -28,6 +28,7 @@ public class Parser
         String loginUrl = "https://10.64.4.64:443/unistudent/studentMain.asp";
         String gradesUrl= "https://10.64.4.64/unistudent/stud_CResults.asp";
         String page;
+
 //        Parser http = new Parser();
 
         CookieHandler.setDefault( new CookieManager() ); // make sure cookies are turned on
