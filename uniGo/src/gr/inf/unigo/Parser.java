@@ -783,7 +783,6 @@ public class Parser
                 {
                     courses.get( i ).addCourseInfo( courseInfo );
                     found = true;
-
                     break;
                 }
             }
