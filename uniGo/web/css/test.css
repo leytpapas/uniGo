@@ -1,0 +1,60 @@
+/* Rectangle 173: */
+.rectangle {
+    background: rgba(8, 97, 111, 0.68);
+    box-shadow: 0 -5px 4px 0 rgba(0, 0, 0, 0.50);
+}
+
+.profile {
+
+    /* Profile: */
+    font-family: AvenirNext-Medium;
+    font-size: 12px;
+    color: #00FFFF;
+    letter-spacing: 0.23px;
+}
+
+.search {
+
+    /* Search: */
+    background: #000000;
+}
+
+.user_icon {
+
+    /* User Icon: */
+    background: #00FFFF;
+}
+
+.oval {
+    /* Oval: */
+    background: #0C585C;
+}
+
+.map_location {
+
+    /* map location (1): */
+    /* Check-In: */
+    font-family: AvenirNext-Medium;
+    font-size: 12px;
+    color: #FFFFFF;
+    letter-spacing: 0.23px;
+}
+
+.news {
+
+    /* News: */
+    font-family: AvenirNext-Medium;
+    font-size: 12px;
+    color: #FFFFFF;
+    letter-spacing: 0.23px;
+}
+
+.home {
+    /* Home: */
+    font-family: AvenirNext-Medium;
+    font-size: 12px;
+    color: #FFFFFF;
+    letter-spacing: 0.23px;
+    /* home: */
+    /* list (2): */
+}

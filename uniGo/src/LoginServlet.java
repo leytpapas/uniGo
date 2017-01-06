@@ -11,14 +11,24 @@ public class LoginServlet extends HttpServlet
     @Override
     protected void doPost( HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException
     {
-        String uid = req.getParameter( "uid" );
-        String passwd = req.getParameter( "passwd" );
+//        String uid = req.getParameter( "uid" );
+//        String passwd = req.getParameter( "passwd" );
+//
+//        req.setAttribute( "user", uid );
+//        req.setAttribute( "passwd", passwd );
 
-        req.setAttribute( "user", uid );
-        req.setAttribute( "passwd", passwd );
+        RequestDispatcher view;
 
-        RequestDispatcher view = req.getRequestDispatcher( "index.jsp" );
+        if ( req.getParameter( "user_name" ).equals( "aptsaous" ) && req.getParameter( "user_pass" ).equals( "123" ) )
+        {
+            view = req.getRequestDispatcher( "success_login.jsp" );
+        }
+        else
+        {
+            view = req.getRequestDispatcher( "error_login.jsp" );
+        }
 
         view.forward( req, resp );
+
     }
 }
