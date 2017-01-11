@@ -6,10 +6,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.*;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +23,8 @@ public class Parser
     private final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36";
     public String grades;
 
+    /* Finds eUniversity's secret input field in the submit form, decodes it, reconstructs it
+       and finally returns the key-value pair of the input field */
     public String getFormCode( String form )
     {
         System.out.println( form );
@@ -69,6 +76,56 @@ public class Parser
         return keyStr.toString();
     }
 
+    public String getSchedule() throws Exception
+    {
+        ArrayList<String> htmlList = new ArrayList<String>();
+
+        //Parser http = new Parser();
+        //String html=http.GetPageContent("https://www.e-ce.uth.gr/studies/undergraduate/");
+        Document doc = Jsoup.connect( "https://www.e-ce.uth.gr/studies/undergraduate/" ).get();
+        Element rows4= doc.getElementById("tabs-1-3");
+
+
+        Elements rows = rows4.getElementsByTag( "td" );
+
+        ArrayList<String> subject = new ArrayList<String>();
+        ArrayList<StringBuffer> schedule = new ArrayList<StringBuffer>();
+
+        for(Element row1: rows) {
+            Elements rows2= row1.getElementsByTag("a");
+            for(Element row2: rows2) {
+                String sub = row2.getElementsByAttribute("title").text();
+                Elements rows3= row2.getElementsByAttribute("title");
+                if (!sub.equals(" ")) {
+                    subject.add(sub);
+                }
+                for( Element row3: rows3) {
+                    String html2 = row3.attr("href");
+
+                    htmlList.add(html2);
+
+                    System.out.println(html2);
+
+                }
+            }
+        }
+
+
+
+        LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+        lhs.addAll(htmlList);
+        htmlList.clear();
+        htmlList.addAll( lhs );
+
+        for(int i = 0; i < htmlList.size(); i++) {
+            //String url= getCourseWebSite(htmlList.get(i));
+            getCourse(htmlList.get(i));
+        }
+
+
+        return "ok";
+    }
+
     public Course getCourse( String courseURL ) throws IOException
     {
         Document doc = Jsoup.connect( courseURL ).get();
@@ -79,11 +136,35 @@ public class Parser
         System.out.println( code );
         System.out.println( title );
 
-        Element courseDetails = doc.getElementsByClass( "course" ).get(2);
+        Element courseDetails = doc.getElementsByClass( "course" ).get( 2 );
         Elements rows = courseDetails.select( "tr" );
         String subjectArea = null, semester = null, type = null, teachingPeriod = null, ECTS = null, url = null, instructor = null, eMail = null, jobTitle = null;
         ArrayList<String> books = new ArrayList<String>();
         String imageUrl = null;
+        ArrayList<String> days = new ArrayList<String>();
+        ArrayList<String> time = new ArrayList<String>();
+        ArrayList<String> courseType = new ArrayList<String>();
+        ArrayList<String> classroom = new ArrayList<String>();
+        String courseName=null;
+
+        String info=null;
+
+        Element row3= doc.getElementById("page-heading");
+        Elements rows3= row3.getElementsByTag("div");
+        for (Element row4:rows3){
+            courseName= row4.getElementsByTag("h1").text();
+
+            Elements row1= doc.getElementsByClass( "sbody" );
+            for (Element row2: row1){
+                days.add(row2.getElementsByTag("td").get(0).text());
+                time.add(row2.getElementsByTag("td").get(1).text());
+                courseType.add(row2.getElementsByTag("td").get(2).text());
+                classroom.add(row2.getElementsByTag("td").get(3).text());
+                // insertSchedule("uniGo",courseName.toCharArray().toString(),row2.getElementsByTag("td").get(0).text().toCharArray(),row2.getElementsByTag("td").get(1).text().toCharArray(), row2.getElementsByTag("td").get(2).text().toCharArray(),row2.getElementsByTag("td").get(3).text().toCharArray());
+
+            }
+
+        }
 
         for ( Element row : rows )
         {
@@ -124,10 +205,16 @@ public class Parser
         System.out.println( jobTitle );
         System.out.println( imageUrl );
 
+        for(int i = 0; i < days.size(); i++) {
+            System.out.print( "Day: " + days.get( i ) +" Time: "+ time.get(i)+ " CourseType: "+ courseType.get(i)+ " Classroom: "+ classroom.get(i)+ "\n" );
+
+        }
+        System.out.println("------------------------------------------\n");
+
         return null;
     }
 
-    public String getUserDetails( String eUniversityURL ) throws IOException
+    public String getUserDetails( String eUniversityURL ) throws IOException, SQLException
     {
         Connection.Response loginForm = Jsoup.connect( eUniversityURL )
                 .userAgent( USER_AGENT )
@@ -188,11 +275,41 @@ public class Parser
 
         Document gradesDoc = userGrades.parse();
 
-        getStudentGrades( gradesDoc.html() );
+        Connection.Response userRegistration = Jsoup.connect( "https://euniversity.uth.gr/unistudent/stud_NewClass.asp?lang=el-gr&studPg=1&mnuid=diloseis;newDil" )
+                .method( Connection.Method.GET )
+                .userAgent( USER_AGENT )
+                .cookies( loginForm.cookies() )
+                .execute();
+
+        Document registrationDoc= userRegistration.parse();
+
+        // getStudentGrades( gradesDoc.html(), uName.toCharArray() );
+        getUserRegistration( registrationDoc.html() );
+
+//        getStudentGrades( gradesDoc.html() );
         return "ok";
 
 
 
+    }
+
+    public String getUserRegistration (String html) throws SQLException, UnsupportedEncodingException {
+
+        //ArrayList<String> coursesList = new ArrayList<String>();
+        Document doc = Jsoup.parse( html );
+
+
+        String userID = doc.getElementById("subheader").text();
+        System.out.println("id:"+ userID);
+        Elements rows= doc.getElementsByAttributeValue("src","images/course1.gif");
+
+        for(Element row:rows){
+            String courseID= row.parent().text();
+            System.out.println("course"+ courseID);
+            insertuserRegistration("uniGo", userID.toCharArray(), courseID.toCharArray());
+            System.out.println(userID.toCharArray());
+        }
+        return "ok";
     }
 
     public String getWeeklySchedule()
@@ -326,6 +443,59 @@ public class Parser
         System.out.println( "Your student id is: " + student.getStudentID() + "\nYour last name is: " + student.getLastName() );
 
         return student.toString();
+    }
+
+    public void insertuserRegistration(String dbName, char[] userID, char[] courseID) throws SQLException, UnsupportedEncodingException
+    {
+        Statement stmt=null;
+
+        String str= "Αποστολος";
+
+        String values= "values('1692','" + str + "')" ;
+        String query= "insert into "+dbName+ ".userRegistration(studentID, courseID)" + values;
+        //
+        // String query= "insert into "+dbName+ ".userRegistration(studentID, courseID)" + "values('"+userID+"','"+ courseID+"')";
+
+        try
+        {
+            Class.forName( "org.mariadb.jdbc.Driver" );
+        }
+        catch ( ClassNotFoundException e )
+        {
+            e.printStackTrace();
+        }
+        java.sql.Connection conn = DriverManager.getConnection( "jdbc:mariadb://83.212.97.212/uniGo?useUnicode=yes&characterEncoding=UTF-8", "unigo", "unipass" );
+        // DriverManager.getConnection("jdbc:mysql://localhost:3306/dbname?useUnicode=yes&characterEncoding=UTF-8","username", "password");
+        System.out.println( "Connected database successfully..." );
+
+        try {
+
+
+            stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+        } catch (SQLException e ) {
+            e.printStackTrace();
+        } finally {
+            if (stmt != null) { stmt.close(); }
+        }
+
+
+        query = "select courseID from " + dbName + ".userRegistration";
+
+        try {
+            stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                String stdID = rs.getString( "courseID" );
+                System.out.println( stdID );
+            }
+        } catch (SQLException e ) {
+            e.printStackTrace();
+        } finally {
+            if (stmt != null) { stmt.close(); }
+        }
+
     }
 
 }

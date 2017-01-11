@@ -37,4 +37,8 @@
         <url-pattern>/single-announcement</url-pattern>
     </servlet-mapping>
 
+    <listener>
+        <listener-class>StartListener</listener-class>
+    </listener>
+
 </web-app>

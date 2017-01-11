@@ -4,205 +4,306 @@
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>Map</title>
+    <title>Custom controls</title>
+
     <style>
-        /* Always set the map height explicitly to define the size of the div element that contains the map. */
-        
+        /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+
         #map {
             height: 100%;
         }
         /* Optional: Makes the sample page fill the window. */
-        
+
         html,
         body {
             height: 100%;
             margin: 0;
             padding: 0;
         }
+
+        img {
+            display: block;
+            margin: auto;
+        }
+
     </style>
 </head>
 
 <body>
-    <div id="map"></div>
-    <script>
-        var map;
-        var university = {
-            lat: 39.35767540000001,
-            lng: 22.950620500000014,
-            alt: 5
-        };
-		var geocoder;
-		var marker ;
+<link rel="stylesheet" type="text/css" href="style.css" />
+<div id="map"></div>
+<div style="position: absolute; left: 5px; top: 20px; padding: 10px 10px 10px 10px;">
+    <br>
+    <form id="checkbox">
+        <input type="checkbox" checked="checked" name="Group 1" value="1" onClick="enablePolygon(this)">Uni places
+    </form>
 
-        /**
-         * The CenterControl adds a control to the map that recenters the map on University.
-         * This constructor takes the control DIV as an argument.
-         * @constructor
-         */
-        function CenterControl(controlDiv, map) {
 
-            // Set CSS for the control border.
-            var controlUI = document.createElement('div');
-            controlUI.style.backgroundColor = '#fff';
-            controlUI.style.border = '2px solid #fff';
-            controlUI.style.borderRadius = '3px';
-            controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-            controlUI.style.cursor = 'pointer';
-            controlUI.style.marginBottom = '22px';
-            controlUI.style.textAlign = 'center';
-            controlUI.title = 'Click to recenter the map';
-            controlDiv.appendChild(controlUI);
+</div>
 
-            // Set CSS for the control interior.
-            var controlText = document.createElement('div');
-            controlText.style.color = 'rgb(25,25,25)';
-            controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-            controlText.style.fontSize = '16px';
-            controlText.style.lineHeight = '38px';
-            controlText.style.paddingLeft = '5px';
-            controlText.style.paddingRight = '5px';
-            controlText.innerHTML = 'Center Map';
-            controlUI.appendChild(controlText);
-			
-			
 
-            // Setup the click event listeners: simply set the map to university.
-            controlUI.addEventListener('click', function() {
-			
-				marker = new google.maps.Marker({
-					position: university,
-					title: "You are here"
-				});
-				marker.setMap(map);
-                map.setCenter(university);
-				map.setZoom(15);
-            });
+<!-- The Modal -->
+<div id="myModal" class="modal">
 
-        }
-		
-        function codeLatLng(infoWindow, lat, lng) {
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close"></span>
 
-            var latlng = new google.maps.LatLng(lat, lng);
-			
-            geocoder.geocode({
-                'latLng': latlng
-            }, function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    console.log(results)
-                    if (results[1]) {
-                        //formatted address
-                        //alert(results[0].formatted_address)
-						infoWindow.setContent(results[0].formatted_address);
-                        //find country name
-                        for (var i = 0; i < results[0].address_components.length; i++) {
-                            for (var b = 0; b < results[0].address_components[i].types.length; b++) {
+            <!--<img src="images/check.png">-->
+            <!--<h2>Modal Header</h2>-->
+        </div>
+    </div>
 
-                                //there are different types that might hold a city admin_area_lvl_1 usually does in come cases looking for sublocality type will be more appropriate
-                                if (results[0].address_components[i].types[b] == "administrative_area_level_1") {
-                                    //this is the object you are looking for
-                                    city = results[0].address_components[i];
-                                    break;
-                                }
+</div>
+
+<script>
+    var map;
+    var university = {
+        lat: 39.359455,
+        lng: 22.949960,
+        alt: 5
+    };
+    var geocoder;
+    var marker;
+    var bermudaTriangle = [];
+    var triangleCoords = [];
+    var infoWindow;
+
+
+    function codeLatLng( lat, lng) {
+
+        var latlng = new google.maps.LatLng(lat, lng);
+
+        geocoder.geocode({
+            'latLng': latlng
+        }, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                //console.log(results)
+                if (results[1]) {
+                    //formatted address
+                    //alert(results[0].formatted_address)
+                    infoWindow.setContent(results[0].formatted_address);
+                    //find country name
+                    for (var i = 0; i < results[0].address_components.length; i++) {
+                        for (var b = 0; b < results[0].address_components[i].types.length; b++) {
+
+                            //there are different types that might hold a city admin_area_lvl_1 usually does in come cases looking for sublocality type will be more appropriate
+                            if (results[0].address_components[i].types[b] == "administrative_area_level_1") {
+                                //this is the object you are looking for
+                                city = results[0].address_components[i];
+                                break;
                             }
                         }
-                        //city data
-                        //alert(city.short_name + " " + city.long_name)
-
-                    } else {
-                        alert("No results found");
                     }
+                    //city data
+                    //alert(city.short_name + " " + city.long_name)
+
                 } else {
-                    alert("Geocoder failed due to: " + status);
+                    alert("No results found");
                 }
-            });
+            } else {
+                alert("Geocoder failed due to: " + status);
+            }
+        });
+    }
+
+
+    function checkIn(controlDiv, map) {
+
+        var controlUI=document.createElement("div");
+        controlUI.setAttribute("id" , "checkInButton");
+        controlUI.innerHTML = "Check in";
+        controlDiv.appendChild(controlUI);
+
+
+        // Get the modal
+        var modal = document.getElementById('myModal');
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        var confirm = document.createElement('img');
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
         }
 
-        function checkIn(controlDiv, map) {
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
 
-            // Set CSS for the control border.
-            var controlUI = document.createElement('div');
-            controlUI.style.backgroundColor = '#fff';
-            controlUI.style.border = '2px solid #fff';
-            controlUI.style.borderRadius = '3px';
-            controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-            controlUI.style.cursor = 'pointer';
-            controlUI.style.marginBottom = '22px';
-            controlUI.style.textAlign = 'center';
-            controlUI.title = 'Click to locate on map';
-            controlDiv.appendChild(controlUI);
 
-            // Set CSS for the control interior.
-            var controlText = document.createElement('div');
-            controlText.style.color = 'rgb(25,25,25)';
-            controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-            controlText.style.fontSize = '16px';
-            controlText.style.lineHeight = '38px';
-            controlText.style.paddingLeft = '5px';
-            controlText.style.paddingRight = '5px';
-            controlText.innerHTML = 'Check In';
-            controlUI.appendChild(controlText);
-	
-            // Setup the click event listeners: simply set the map to university.
-            controlUI.addEventListener('click', function() {
-                var infoWindow = new google.maps.InfoWindow({
-                    map: map
+
+        // Setup the click event listeners: simply set the map to university.
+        controlUI.addEventListener('click', function() {
+            infoWindow.close();
+            infoWindow = new google.maps.InfoWindow({
+                map: map
+            });
+
+            // Try HTML5 geolocation.
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+
+
+                    infoWindow.setPosition(pos);
+                    codeLatLng(pos.lat, pos.lng);
+
+
+                    map.setCenter(pos);
+                    map.setZoom(17);
+                    var curPosition = new google.maps.LatLng(pos.lat, pos.lng);
+
+                    confirm.setAttribute('src', 'images/nocheck.png');
+                    var flag=false;
+                    for(var i=0; i < triangleCoords.length; i++) {
+                        if ( google.maps.geometry.poly.containsLocation(curPosition , bermudaTriangle[i]) ){
+                            //do your job here
+                            //alert("You have succesfully checked in your classroom you jackass!")
+
+                            // When the user clicks on the button, open the modal
+
+                            confirm.setAttribute('src', 'images/check.png');
+
+                        }
+                    }
+
+                    modal.firstElementChild.firstElementChild.appendChild(confirm);
+                    modal.style.display = "block";
+
+
+                }, function() {
+                    handleLocationError(true,  map.getCenter());
                 });
+            } else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false,  map.getCenter());
+            }
 
-                // Try HTML5 geolocation.
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function(position) {
-                        var pos = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude,
-                        };
-						
-						
-						infoWindow.setPosition(pos);
-						codeLatLng(infoWindow,pos.lat, pos.lng);
-						
-						
-                        map.setCenter(pos);
-						map.setZoom(15);
-                    }, function() {
-                        handleLocationError(true, infoWindow, map.getCenter());
-                    });
-                } else {
-                    // Browser doesn't support Geolocation
-                    handleLocationError(false, infoWindow, map.getCenter());
-                }
+        });
 
-            });
+    }
 
-        }
 
-        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-            infoWindow.setPosition(pos);
-            infoWindow.setContent(browserHasGeolocation ?
+
+    function handleLocationError(browserHasGeolocation,  pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
                 'Error: The Geolocation service failed.' :
                 'Error: Your browser doesn\'t support geolocation.');
+    }
+
+    function enablePolygon(check) {
+        // Iterate over the vertices.
+        for (var i =0; i < bermudaTriangle.length; i++) {
+            bermudaTriangle[i].setVisible(check.checked);
+        }
+    }
+
+    function polygonDetails(event) {
+        // Since this polygon has only one path, we can call getPath() to return the
+        // MVCArray of LatLngs.
+        var vertices = this.getPath();
+
+        var contentString = '<b>Bermuda Triangle polygon</b><br>' +
+                'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
+                '<br>';
+
+        // Iterate over the vertices.
+        for (var i =0; i < vertices.getLength(); i++) {
+            var xy = vertices.getAt(i);
+            contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
+                    xy.lng();
         }
 
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 12,
-                center: university
+        // Replace the info window's content and position.
+        infoWindow.setContent(contentString);
+        infoWindow.setPosition(event.latLng);
+
+        infoWindow.open(map);
+    }
+
+
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 17,
+            center: university,
+            disableDefaultUI: true
+        });
+
+
+
+        triangleCoords[0] = [
+            {lat: 39.361481, lng: 22.942791},
+            {lat: 39.361444, lng: 22.942922},
+            {lat: 39.361332, lng: 22.942879},
+            {lat: 39.361366, lng: 22.942747}
+        ];
+
+
+        triangleCoords[1] = [
+            {lat: 39.360841, lng: 22.949886},
+            {lat: 39.360925, lng: 22.950000},
+            {lat: 39.360843, lng: 22.950163},
+            {lat: 39.360738, lng: 22.950064}
+        ];
+
+        triangleCoords[2] = [
+            {lat: 39.35756408801969, lng: 22.95031752111703 },
+            {lat: 39.35732485711687, lng: 22.95083051065708},
+            {lat: 39.35765864741175, lng: 22.95112478638464},
+            {lat: 39.35796423240407, lng: 22.95048909129807},
+            {lat: 39.35777917068305, lng: 22.95033967941471},
+            {lat: 39.35772163757486, lng: 22.95044159892292}
+        ];
+
+
+
+        // Construct the polygon.
+        for(var i=0; i < triangleCoords.length; i++){
+            bermudaTriangle[i] = new google.maps.Polygon({
+                paths: triangleCoords[i],
+                strokeColor: '#FF00FF00',
+                strokeOpacity: 0.8,
+                strokeWeight: 3,
+                fillColor: '#7F00FF00',
+                fillOpacity: 0.35
             });
-			geocoder = new google.maps.Geocoder();
-			
-            // Create the DIV to hold the control and call the CenterControl()
-            // constructor passing in this DIV.
-            var centerControlDiv = document.createElement('div');
-            var centerControl = new CenterControl(centerControlDiv, map);
-
-            var CheckIn = new checkIn(centerControlDiv, map);
-            centerControlDiv.index = 2;
-            map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+            bermudaTriangle[i].setMap(map);
+            // Add a listener for the click event.
+            //bermudaTriangle[i].addListener('click', polygonDetails);
 
 
         }
-    </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDbFAAXlBKqQajVIxCbLBF-lz2ZIHp2Jg&callback=initMap">
-    </script>
+
+
+        geocoder = new google.maps.Geocoder();
+
+        // Create the DIV to hold the control and call the CenterControl()
+        // constructor passing in this DIV.
+        var centerControlDiv = document.createElement('div');
+        //var centerControl = new CenterControl(centerControlDiv, map);
+
+        var CheckIn = new checkIn(centerControlDiv, map);
+        centerControlDiv.index = 1;
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+
+        infoWindow = new google.maps.InfoWindow;
+
+    }
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDbFAAXlBKqQajVIxCbLBF-lz2ZIHp2Jg&callback=initMap">
+</script>
 </body>
 
 </html>
