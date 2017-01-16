@@ -1,6 +1,13 @@
 import gr.inf.unigo.Parser;
 import gr.inf.unigo.UniGoDB;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.Part;
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,10 +23,16 @@ public class Test
 {
     public static void main( String[] args ) throws Exception
     {
-        UniGoDB uniGoDB = new UniGoDB( "unigo", "unipass", "uniGo" );
+        File image = new File( "/Users/aptsaous/IdeaProjects/uniGo_proj/uniGo/web/images/profile.jpg" );
 
-        uniGoDB.searchUser( "aptsaous2" );
-        uniGoDB.addUser( "dokimh", "asdfg" );
+        BufferedImage image2 = ImageIO.read( image );
+
+        ImageIO.write(image2, "jpg", new File("/Users/aptsaous/IdeaProjects/uniGo_proj/uniGo/web/images/myprofile99.jpg"));
+
+        //        UniGoDB uniGoDB = new UniGoDB( "unigo", "unipass", "uniGo" );
+//
+//        uniGoDB.searchUserByUserName( "aptsaous2" );
+//        uniGoDB.addUser( "dokimh", "asdfg" );
 //
 
 //

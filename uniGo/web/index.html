@@ -7,51 +7,74 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link rel="apple-touch-icon" href="images/ios_logo.png"/>
     <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
-          href="apple-touch-startup-image-640x1096.png">
+          href="/images/apple-touch-startup-image-640x1096.png">
     <title>uniGo</title>
     <link rel="stylesheet" href="css/framework7.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/colors/magenta.css">
     <link type="text/css" rel="stylesheet" href="css/swipebox.css"/>
     <link type="text/css" rel="stylesheet" href="css/animations.css"/>
-    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,700,900' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,700,900' rel='stylesheet' type='text/css'>
 </head>
 <body id="mobile_wrap">
 <script>
-
     function fb_login()
     {
-        FB.login(function(response) {
+        FB.login( function( response )
+        {
 
-            if (response.authResponse) {
-                console.log('Welcome!  Fetching your information.... ');
-                //console.log(response); // dump complete info
-                access_token = response.authResponse.accessToken; //get access token
-                user_id = response.authResponse.userID; //get FB UID
+            var user_id;
+            var gender;
 
-                FB.api('/me', function(response) {
-                    user_email = response.email; //get user email
-                    document.getElementById('status').innerHTML = 'Connected ' + response.name;
+            if ( response.authResponse )
+            {
+                user_id = response.authResponse.userID; /* gets FB UID */
+
+                FB.api('/me', 'get', { fields: 'gender' }, function (response) {
+
+                    $.ajax({
+                        type: 'post',
+                        url: '/uniGo_war/fbLogin',
+                        data: {
+                            user_name: localStorage.userID,
+                            fb_id: user_id,
+                            gender: response.gender
+                        },
+                        success: function (response) {
+
+                            if (response == 'OK')
+                            {
+                                self.location.href = '/uniGo_war/home';
+
+//                                document.getElementById("cl-pop").click();
+
+                            }
+                            else {
+                                var error = '<p style="color:firebrick;font-size: larger" class="error_login">' +  "ERROR" + '</p>';
+                                $('.signup_bottom').html(error);
+                            }
+                        }
+                    });
                     // you can store this data into your database
                 });
 
             }
-            else if (response.status === 'connected')
-            {
-                document.getElementById('status').innerHTML = 'Connected';
+            else if (response.status === 'connected') {
+                document.getElementById('fb-response').innerHTML = 'Connected';
 
             }
             else if (response.status === 'not_authorized') {
-                document.getElementById('status').innerHTML = 'Please log ' + 'into this app.';
+                document.getElementById('fb-response').innerHTML = 'Please log ' + 'into this app.';
             }
             else {
                 //user hit cancel button
-                console.log('User cancelled login or did not fully authorize.');
+                document.getElementById('fb-response').innerHTML = 'User cancelled login or did not fully authorize.';
 
             }
         }, {
-            scope: 'public_profile,email'
+            scope: 'public_profile,email', redirect_uri: '/uniGo_war/home', display: 'touch'
         });
+
     }
 
     window.fbAsyncInit = function() {
@@ -80,78 +103,6 @@
 
 <div class="panel-overlay"></div>
 
-<div class="panel panel-left panel-cover">
-    <div class="user_login_info">
-        <div class="user_thumb">
-            <img src="images/profile.jpg" alt="" title=""/>
-
-            <div class="user_details">
-                <p>Hi, <span>John Doe</span></p>
-            </div>
-            <div class="user_social">
-                <form action="features.html" method="post">
-                    <label for="file-input">
-                        <img src="images/icons/white/upload-white.png"/>
-                    </label>
-
-                    <input id="file-input" type="file" onchange="this.form.submit()" name="myFile"/>
-                    <!--<input type="submit" name="submit" value="Submit" />-->
-                </form>
-
-            </div>
-            <!--<div class="user_social">-->
-            <!--<a href="#" data-popup=".popup-social" class="open-popup"><img src="images/icons/white/twitter.png" alt="" title="" /></a>              -->
-            <!--</div>       -->
-        </div>
-
-        <nav class="user-nav">
-            <ul>
-                <li><a href="features.html" class="close-panel"><img src="images/icons/white/settings.png" alt="" title=""/><span>Settings</span></a></li>
-                <li><a href="features.html" class="close-panel"><img src="images/icons/white/briefcase.png" alt="" title=""/><span>Account</span></a></li>
-                <li><a href="features.html" class="close-panel"><img src="images/icons/white/message.png" alt="" title=""/><span>Messages</span><strong class="green">12</strong></a></li>
-                <li><a href="features.html" class="close-panel"><img src="images/icons/white/download.png" alt="" title=""/><span>Downloads</span><strong class="blue">5</strong></a></li>
-                <li><a href="index.html" class="close-panel"><img src="images/icons/white/lock.png" alt="" title=""/><span>Logout</span></a></li>
-            </ul>
-        </nav>
-    </div>
-</div>
-
-<div class="panel panel-right panel-cover">
-
-    <h2>Search</h2>
-
-    <div class="search_form">
-        <form id="SearchForm" method="post">
-            <input type="text" name="keyword" value="" class="search_input" placeholder="keyword"/>
-            <input type="image" name="submit" class="search_submit" id="submit" src="images/icons/white/search.png"/>
-        </form>
-    </div>
-    <div class="clear"></div>
-    <h3>POPULAR POSTS</h3>
-    <ul class="popular_posts">
-        <li>
-            <a href="blog-single.html" class="close-panel"><img src="images/photos/photo1.jpg" alt="" title=""/></a>
-            <span><a href="blog-single.html" class="close-panel">Design is not just what it looks like and feels
-                like.</a></span></li>
-        <li>
-            <a href="blog-single.html" class="close-panel"><img src="images/photos/photo2.jpg" alt="" title=""/></a>
-            <span><a href="blog-single.html" class="close-panel">Fashion fades, only style remains the same.</a></span>
-        </li>
-        <li>
-            <a href="blog-single.html" class="close-panel"><img src="images/photos/photo3.jpg" alt="" title=""/></a>
-            <span><a href="blog-single.html" class="close-panel">Sed ut perspiciatis unde omnis iste
-                accusantium.</a></span></li>
-        <li>
-            <a href="blog-single.html" class="close-panel"><img src="images/photos/photo4.jpg" alt="" title=""/></a>
-            <span><a href="blog-single.html" class="close-panel">Nemo enim ipsam voluptatem quia voluptas.</a></span>
-        </li>
-        <li>
-            <a href="blog-single.html" class="close-panel"><img src="images/photos/photo5.jpg" alt="" title=""/></a>
-            <span><a href="blog-single.html" class="close-panel">Totam rem aperiam, eaque ipsa quae ab illo inventore
-                veritatis.</a></span></li>
-    </ul>
-</div>
-
 <div class="views">
 
     <div class="view view-main">
@@ -162,25 +113,16 @@
                 <div class="page-content">
                     <div class="logo"><img src="images/logo.png" alt="" title=""/></div>
                     <div id="ldap"><a id="ldap_button" href="#" data-popup=".popup-login" class="open-popup">Academic Login</a></div>
-                    <div id="status"><a href="#" class="fb_button" onclick="fb_login();">Facebook</a></div>
+                    <div id="status">
+                        <a href="#" class="fb_button" onclick="fb_login();">Facebook</a>
+                        <div id="fb-response"></div>
+                    </div>
                 </div>
             </div>
 
 
         </div>
 
-        <!-- Bottom Toolbar-->
-        <div class="toolbar">
-            <div class="toolbar-inner">
-                <ul class="toolbar_icons">
-                    <li><a href="#" data-panel="left" class="open-panel"><img src="images/icons/white/user.png" alt="" title=""/></a></li>
-                    <li><a href="photos.html"><img src="images/icons/white/photos.png" alt="" title=""/></a></li>
-                    <li class="menuicon"><a href="menu.html"><img src="images/map-white.png" alt="" title=""/></a></li>
-                    <li><a href="announcements"><img src="images/icons/white/blog.png" alt="" title=""/></a></li>
-                    <li><a href="contact.html"><img src="images/icons/white/contact.png" alt="" title=""/></a></li>
-                </ul>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -195,9 +137,25 @@
                 <input type="text" id="uname" name="Username" value="" class="form_input required" placeholder="username"/>
                 <input type="password" id="passwd" name="Password" value="" class="form_input required" placeholder="password"/>
 
+                <div id="gender" style="margin-top: 6%;">
+                    <label style="display: inline-flex;padding-left: 12%;">
+                        <input type="radio" name="gender" value="Male" checked="checked">
+                        <div>
+                            <div>Male</div>
+                        </div>
+                    </label>
+
+                    <label style="display: inline-flex;padding-left: 28%;">
+                        <input type="radio" name="gender" value="Female">
+                        <div>
+                            <div>Female</div>
+                        </div>
+                    </label>
+                </div>
+
                 <!--<div class="forgot_pass"><a href="#" data-popup=".popup-forgot" class="open-popup">Forgot Password?</a></div>-->
                 <a href="#" id="ldap_signin_button"
-                   onclick="ldap_login(document.getElementById('uname').value, document.getElementById('passwd').value);">SIGN IN</a>
+                   onclick="ldap_login(document.getElementById('uname').value, document.getElementById('passwd').value, document.querySelector('input[name=\'gender\']:checked').value);">SIGN IN</a>
 
                 <!--<input type="submit" name="submit" class="form_submit" id="submit" value="SIGN IN"/>-->
             </form>
@@ -211,92 +169,78 @@
     </div>
 </div>
 
-<!-- Register Popup -->
-<div class="popup popup-signup">
-    <div class="content-block-login">
-        <h4>REGISTER</h4>
-
-        <div class="form_logo"><img src="images/logo.png" alt="" title=""/></div>
-        <div class="loginform">
-            <form id="RegisterForm" method="post">
-                <input type="text" name="Username" value="" class="form_input required" placeholder="username"/>
-                <input type="text" name="Email" value="" class="form_input required" placeholder="email"/>
-                <input type="password" name="Password" value="" class="form_input required" placeholder="password"/>
-                <input type="submit" name="submit" class="form_submit" id="submit" value="SIGN UP"/>
-            </form>
-            <div class="signup_social">
-                <a href="http://www.facebook.com/" class="signup_facebook external">FACEBOOK</a>
-                <a href="http://www.twitter.com/" class="signup_twitter external">TWITTER</a>
-            </div>
-        </div>
-        <div class="close_loginpopup_button"><a href="#" class="close-popup"><img
-                src="images/icons/white/menu_close.png" alt="" title=""/></a></div>
-    </div>
-</div>
-
-<!-- Login Popup -->
-<div class="popup popup-forgot">
-    <div class="content-block-login">
-        <h4>FORGOT PASSWORD</h4>
-
-        <div class="form_logo"><img src="images/logo.png" alt="" title=""/></div>
-        <div class="loginform">
-            <form id="ForgotForm" method="post">
-                <input type="text" name="Email" value="" class="form_input required" placeholder="email"/>
-                <input type="submit" name="submit" class="form_submit" id="submit" value="RESEND PASSWORD"/>
-            </form>
-            <div class="signup_bottom">
-                <p>Check your email and follow the instructions to reset your password.</p>
-            </div>
-        </div>
-        <div class="close_loginpopup_button"><a href="#" class="close-popup"><img
-                src="images/icons/white/menu_close.png" alt="" title=""/></a></div>
-    </div>
-</div>
-
-
-<!-- Social Popup -->
-<div class="popup popup-social">
-    <div class="content-block">
-        <h4>Follow Us</h4>
-
-        <p>Social icons solution that allows you share and increase your social popularity.</p>
-        <ul class="social_share">
-            <li><a href="http://twitter.com/" class="external"><img src="images/icons/white/twitter.png" alt=""
-                                                                    title=""/></a></li>
-            <li><a href="http://www.facebook.com/" class="external"><img src="images/icons/white/facebook.png" alt=""
-                                                                         title=""/></a></li>
-            <li><a href="http://plus.google.com" class="external"><img src="images/icons/white/googleplus.png" alt=""
-                                                                       title=""/></a></li>
-            <li><a href="http://www.dribbble.com/" class="external"><img src="images/icons/white/dribbble.png" alt=""
-                                                                         title=""/></a></li>
-            <li><a href="http://www.linkedin.com/" class="external"><img src="images/icons/white/linkedin.png" alt=""
-                                                                         title=""/></a></li>
-            <li><a href="http://www.pinterest.com/" class="external"><img src="images/icons/white/pinterest.png" alt=""
-                                                                          title=""/></a></li>
-        </ul>
-        <div class="close_popup_button"><a href="#" class="close-popup"><img src="images/icons/white/menu_close.png"
-                                                                             alt="" title=""/></a></div>
-    </div>
-</div>
-
-
 <script type="text/javascript" src="js/jquery-1.10.1.min.js"></script>
 <script src="js/jquery.validate.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="js/framework7.js"></script>
 <script type="text/javascript" src="js/my-app.js"></script>
 <script type="text/javascript" src="js/jquery.swipebox.js"></script>
 <script type="text/javascript" src="js/email.js"></script>
-
+<!--<script>(function(a,b,c){if(c in b&&b[c]){var d,e=a.location,f=/^(a|html)$/i;a.addEventListener("click",function(a){d=a.target;while(!f.test(d.nodeName))d=d.parentNode;"href"in d&&(d.href.indexOf("http")||~d.href.indexOf(e.host))&&(a.preventDefault(),e.href=d.href)},!1)}})(document,window.navigator,"standalone")</script>-->
 <!-- Upload photo when selecting photo -->
 <script>
-    document.getElementById("file").onchange = function () {
-        document.getElementById("form").submit();
+    function handleFileSelect(evt) {
+        var files = evt.target.files; // FileList object
+
+        // Loop through the FileList and render image files as thumbnails.
+        for (var i = 0, f; f = files[i]; i++) {
+
+            // Only process image files.
+            if (!f.type.match('image.*')) {
+                continue;
+            }
+
+            var reader = new FileReader();
+
+            // Closure to capture the file information.
+            reader.onload = (function(theFile) {
+                return function(e) {
+                    // Render thumbnail.
+                    var span = document.createElement('span');
+                    span.innerHTML = ['<img class="thumb" src="', e.target.result,
+                        '" title="', escape(theFile.name), '"/>'].join('');
+                    document.getElementById('prof').setAttribute('src', e.target.result );
+                    document.getElementById('dok').innerHTML = 'Apostolos';
+
+                    $.ajax({
+                        type: 'post',
+                        url: '/uniGo_war/imgUpload',
+                        data: {
+                            user_name:localStorage.userID,
+                            image: e.target.result
+                        },
+                        success: function (response) {
+
+//                            if ( response == 'OK' )
+//                            {
+//                                $( '.signup_bottom' ).html( response );
+//
+//                                localStorage.userID = name;
+//
+//                                document.getElementById( "cl-pop" ).click();
+//                            }
+//                            else
+//                            {
+//                                error = '<p style="color:firebrick;font-size: larger" class="error_login">' + response + '</p>';
+//                                $( '.signup_bottom' ).html( error );
+//                            }
+                        }
+                    });
+                };
+            })(f);
+
+            // Read in the image file as a data URL.
+            reader.readAsDataURL(f);
+        }
     }
+
+    document.getElementById('file-input').addEventListener('change', handleFileSelect, false);
+    //    document.getElementById("file").onchange = function uploadImage() {
+    //        document.getElementById("form").submit();
+    //    }
 </script>
 
 <script type="text/javascript">
-    function ldap_login( name, pass )
+    function ldap_login( name, pass, gender )
     {
         var msg = '(*) Sign-in failed! Wrong username or password! Try again in 1 minute';
 
@@ -307,37 +251,26 @@
             url: '/uniGo_war/login',
             data: {
                 user_name:name,
-                user_pass:pass
+                user_pass:pass,
+                user_gender:gender
             },
             success: function (response) {
 
                 if ( response == 'OK' )
                 {
-                    $( '.signup_bottom' ).html( response );
+                    localStorage.userID = name;
+
+                    self.location.href = '/uniGo_war/home';
+
                     document.getElementById( "cl-pop" ).click();
                 }
                 else
                 {
-                    error = '<p style="color:firebrick;font-size: larger" class="error_login">' + response + '</p>';
                     $( '.signup_bottom' ).html( error );
                 }
             }
         });
     }
-</script>
-<script>
-    var map;
-
-    function initMap() {
-        $("iframe").replaceWith("<div id=\"google_map\" style=\"width:100%;height:300px\" onclick=\"initMap()\"></div>");
-        map = new google.maps.Map(document.getElementById('google_map'), {
-            zoom: 12,
-            center: new google.maps.LatLng(39.3622, 22.9422)
-        });
-    }
-</script>
-<script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDbFAAXlBKqQajVIxCbLBF-lz2ZIHp2Jg">
 </script>
 </body>
 </html>

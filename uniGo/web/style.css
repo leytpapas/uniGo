@@ -52,7 +52,8 @@ body {
 }
 
 body {
-    font-family: 'Source Sans Pro', sans-serif;
+    /*font-family: 'Source Sans Pro', sans-serif;*/
+    font-family: 'Avenir';
     margin: 0;
     padding: 0;
     color: #232323;
@@ -190,7 +191,7 @@ p.error_login {
 a#ldap_signin_button {
     background-color: #833545;
     position: absolute;
-    top: 50%;
+    top: 70%;
     width: 70%;
     left: 15%;
     display: inline-block;
@@ -327,15 +328,21 @@ a.button_small {
     bottom: 0px;
     left: 0px;
     width: 100%;
-    height: 132px;
+    height: 100%;
+    /*height: 132px;*/
     z-index: 888;
-    background: url(images/trans_black_gradient.png) repeat-x;
+    /*background: url(images/trans_black_gradient.png) repeat-x;*/
+    background-color: rgba(0,0,0,0.3);
 }
 
 .user_details p {
     padding: 70px 0 0 10px;
     text-align: left;
     font-size: 14px;
+
+    bottom: 5%;
+    position: absolute;
+    left: 5%;
 }
 
 .user_details p span {
@@ -634,7 +641,7 @@ ul.toolbar_icons li.menuicon img {
 
 .logo {
     position: absolute;
-    top: -10%;
+    top: -24%;
     width: 100%;
     height: 100%;
     text-align: center;
@@ -653,8 +660,29 @@ ul.toolbar_icons li.menuicon img {
 
 /* 6-1. HOME PAGE WITH SLIDER */
 
-.swiper-container {
+.swiper-slide div img#avatar
+{
+    float: left;
+    padding-left: 10%;
+    height: 90%;
+}
+
+.swiper-slide div div#slider-text
+{
+    /* float: left; */
+    color: white;
+    text-align: center;
+    padding-right: 10%;
+    padding-top: 8%;
+}
+
+.swiper-slide .slider-box {
     height: 100%;
+}
+
+.swiper-container {
+    height: 50%;
+    top: 40%;
 }
 
 .swiper-slide {
@@ -718,6 +746,16 @@ a.swiper_read_more {
     bottom: 0px;
     overflow: scroll;
     -webkit-overflow-scrolling: touch;
+}
+
+div#status div#fb-response {
+    position: absolute;
+    top: 75%;
+    color: firebrick;
+    text-align: center;
+    width: 100%;
+    font-size: x-large;
+    font-family: Avenir;
 }
 
 .page_content {
@@ -824,34 +862,76 @@ div#map_container {
 }
 
 .nav_left_logo {
+    /*float: left;*/
+    /*width: 40%;*/
+    /*padding: 0 0 0 5%;*/
+
     float: left;
-    width: 40%;
-    padding: 0 0 0 5%;
+    width: 50%;
+    height: inherit;
+}
+
+.nav_left_logo div#nav_top {
+    width: 100%;
+    height: inherit;
+    float: left;
+}
+
+.nav_left_logo a#nav-top {
+    height: 100%;
+    width: 100%;
+    display: block;
+}
+
+.nav_right_button div#nav_top2 {
+    width: 100%;
+    height: inherit;
+    float: right;
+}
+
+.nav_right_button a#nav-top2 {
+    height: 100%;
+    width: 100%;
+    display: block;
 }
 
 .nav_left_logo a img {
     display: inline-block;
     max-width: 30%;
-    padding: 10px 0 0 0;
+    /*padding: 10px 0 0 0;*/
+    /*padding: 4px 0 0 0;*/
+    height: 100%;
+    padding: 0px 0 0px 5%;
+
 }
 
 .nav_right_button {
+    /*float: right;*/
+    /*width: 50%;*/
+    /*text-align: right;*/
+
     float: right;
     width: 50%;
-    text-align: right;
+    height: inherit;
 }
 
 .nav_right_button a {
     display: block;
     float: right;
-    width: 40px;
-    padding: 10px 15px 0 0;
+    /*width: 40px;*/
+    width: 40%;
+    /*padding: 6px 10px 0 0;*/
+    /*padding: 10px 15px 0 0;*/
 }
 
 .nav_right_button a img {
-    display: inline-block;
+    /*display: inline-block;*/
+    /*max-width: 100%;*/
+    /*padding: 0;*/
+
+    float: right;
     max-width: 100%;
-    padding: 0;
+    max-height: 90%;
 }
 
 ul.responsive_table {
@@ -1677,6 +1757,18 @@ ul.comments li {
     display: inline-block;
 }
 
+.item-inner1 {
+    position: absolute;
+    top: 43%;
+    left: 26%;
+}
+
+.item-inner2 {
+    position: absolute;
+    top: 43%;
+    left: 59%;
+}
+
 .contactform label.label-switch {
     display: inline-block;
     width: auto;
@@ -2063,7 +2155,9 @@ a.signup_twitter {
     }
 
     .swiper-container {
-        height: 95%;
+        /*height: 95%;*/
+        height: 70%;
+        top: 28%;
     }
 
     .swiper-slide span {
@@ -2098,13 +2192,18 @@ a.signup_twitter {
     }
 
     .nav_left_logo a img {
-        max-width: 65%;
-        padding: 10px 0 0 0;
+        /*max-width: 65%;*/
+        max-width: 30%;
+        /*padding: 10px 0 0 0;*/
+        /*padding: 7px 0 0 0;*/
+
     }
 
     .nav_right_button a {
-        width: 30px;
-        padding: 10px 15px 0 0;
+        /*width: 30px;*/
+        /*padding: 10px 15px 0 0;*/
+        width: 60%;
+        /*padding: 6px 10px 0 0;*/
     }
 
     ul.posts li {

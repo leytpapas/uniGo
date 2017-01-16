@@ -5,6 +5,17 @@
          version="3.1">
 
     <servlet>
+        <servlet-name>Upload</servlet-name>
+        <!-- class Name must be fully qualified -->
+        <servlet-class>UploadServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Upload</servlet-name>
+        <url-pattern>/upload</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>Login</servlet-name>
         <!-- class Name must be fully qualified -->
         <servlet-class>LoginServlet</servlet-class>
@@ -16,6 +27,28 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>FbLogin</servlet-name>
+        <!-- class Name must be fully qualified -->
+        <servlet-class>FbLoginServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>FbLogin</servlet-name>
+        <url-pattern>/fbLogin</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ImgUpload</servlet-name>
+        <!-- class Name must be fully qualified -->
+        <servlet-class>ImageUploadServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ImgUpload</servlet-name>
+        <url-pattern>/imgUpload</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>Announcements</servlet-name>
         <!-- class Name must be fully qualified -->
         <servlet-class>AnnouncementsServlet</servlet-class>
@@ -24,6 +57,17 @@
     <servlet-mapping>
         <servlet-name>Announcements</servlet-name>
         <url-pattern>/announcements</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Home</servlet-name>
+        <!-- class Name must be fully qualified -->
+        <servlet-class>HomeServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Home</servlet-name>
+        <url-pattern>/home</url-pattern>
     </servlet-mapping>
 
     <servlet>
