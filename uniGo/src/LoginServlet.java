@@ -1,3 +1,5 @@
+import gr.inf.unigo.CourseRegistration;
+import gr.inf.unigo.Parser;
 import gr.inf.unigo.Student;
 import gr.inf.unigo.UniGoDB;
 
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.sql.SQLException;
 
 public class LoginServlet extends HttpServlet
@@ -38,6 +41,27 @@ public class LoginServlet extends HttpServlet
                 HttpSession session = req.getSession();
                 session.setAttribute( "user", student );
 
+                Parser parser = new Parser();
+                CourseRegistration courseRegistration;
+
+                while ( true )
+                {
+                    try
+                    {
+                        courseRegistration = parser.getUserDetails( "https://euniversity.uth.gr/unistudent/login.asp", student.getUserName(), student.getPassword() );
+
+                        if ( courseRegistration != null )
+                            break;
+                    }
+                    catch ( SocketTimeoutException ex )
+                    {
+
+                    }
+
+                }
+
+                session.setAttribute( "reggedCourses", courseRegistration );
+
                 view = req.getRequestDispatcher( "success_login.jsp" );
             }
             else
@@ -51,6 +75,29 @@ public class LoginServlet extends HttpServlet
                     Student student = db.getStudent( userName );
                     HttpSession session = req.getSession();
                     session.setAttribute( "user", student );
+
+                    Parser parser = new Parser();
+                    CourseRegistration courseRegistration;
+
+                    while ( true )
+                    {
+                        try
+                        {
+                            courseRegistration = parser.getUserDetails( "https://euniversity.uth.gr/unistudent/login.asp", student.getUserName(), student.getPassword() );
+
+                            if ( courseRegistration != null )
+                                break;
+                        }
+                        catch ( SocketTimeoutException ex )
+                        {
+
+                        }
+
+                    }
+
+                    session.setAttribute( "reggedCourses", courseRegistration );
+
+                    view = req.getRequestDispatcher( "success_login.jsp" );
                 }
                 else
                 {

@@ -1,6 +1,4 @@
-import gr.inf.unigo.RankingEntry;
-import gr.inf.unigo.Student;
-import gr.inf.unigo.UniGoDB;
+import gr.inf.unigo.*;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,7 +10,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class RankingsServlet extends HttpServlet
+public class ScheduleServlet extends HttpServlet
 {
     @Override
     protected void doGet( HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException
@@ -20,25 +18,23 @@ public class RankingsServlet extends HttpServlet
         RequestDispatcher view;
 
         HttpSession session = req.getSession();
-        Student user = ( Student ) session.getAttribute( "user" );
-
+        CourseRegistration courseRegistration = ( CourseRegistration ) session.getAttribute( "reggedCourses" );
 
         UniGoDB db = ( UniGoDB ) getServletContext().getAttribute( "db" );
 
         try
         {
-            ArrayList<RankingEntry> rankings = db.getRankings( user.getUserName() );
+            ArrayList<Course> schedule = db.getDailySchedule( courseRegistration );
 
-            session.setAttribute( "rankings", rankings );
+            session.setAttribute( "schedule", schedule );
         }
         catch ( SQLException e )
         {
             e.printStackTrace();
         }
 
-        view = req.getRequestDispatcher( "rankings.jsp" );
+        view = req.getRequestDispatcher( "timetable.jsp" );
 
         view.forward( req, resp );
-
     }
 }

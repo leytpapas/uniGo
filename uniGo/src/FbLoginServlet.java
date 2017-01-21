@@ -1,3 +1,6 @@
+import gr.inf.unigo.CourseRegistration;
+import gr.inf.unigo.Parser;
+import gr.inf.unigo.Student;
 import gr.inf.unigo.UniGoDB;
 
 import javax.servlet.RequestDispatcher;
@@ -22,19 +25,54 @@ public class FbLoginServlet extends HttpServlet
         String gender = req.getParameter( "gender" );
 
         UniGoDB db = ( UniGoDB ) getServletContext().getAttribute( "db" );
+        Student student = null;
+        try
+        {
+            student = db.getStudent( userName );
+        }
+        catch ( SQLException e )
+        {
+            e.printStackTrace();
+        }
 
         try
         {
             HttpSession session = req.getSession();
-            session.setAttribute( "user", db.getStudent( userName ) );
+            session.setAttribute( "user", student );
 
             if ( db.searchUserByFbID( fb_id ) )
             {
+                Parser parser = new Parser();
+                CourseRegistration courseRegistration;
+
+                while ( true )
+                {
+                    courseRegistration = parser.getUserDetails( "https://euniversity.uth.gr/unistudent/login.asp", student.getUserName(), student.getPassword() );
+
+                    if ( courseRegistration != null )
+                        break;
+                }
+
+                session.setAttribute( "reggedCourses", courseRegistration );
+
                 view = req.getRequestDispatcher( "success_login.jsp" );
             }
             else if ( db.searchUserByUserName( userName ) )
             {
                 db.addFacebookID( userName, fb_id, gender );
+
+                Parser parser = new Parser();
+                CourseRegistration courseRegistration;
+
+                while ( true )
+                {
+                    courseRegistration = parser.getUserDetails( "https://euniversity.uth.gr/unistudent/login.asp", student.getUserName(), student.getPassword() );
+
+                    if ( courseRegistration != null )
+                        break;
+                }
+
+                session.setAttribute( "reggedCourses", courseRegistration );
 
                 view = req.getRequestDispatcher( "success_login.jsp" );
             }

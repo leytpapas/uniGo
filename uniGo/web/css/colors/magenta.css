@@ -41,6 +41,12 @@ ul.responsive_table li:first-child{
 background-color:#833545;
 color:#FFFFFF;
 }
+
+ul.responsive_table li#selected {
+  background-color: #a4c2d8;
+  color: #FFFFFF;
+}
+
 li.table_row{
 background-color:#e6e6e6;
 }

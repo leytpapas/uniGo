@@ -1,50 +1,57 @@
 package gr.inf.unigo;
 
-import java.util.ArrayList;
-
 public class Course
 {
-    private String courseName;
-    private String instructor;
-    private ArrayList<CourseInfo> courseInfoList;
+    private String course;
+    private String timeCourse;
+    private String classroom;
+    private String dayCourse;
 
-    public Course( String courseName, String instructor )
+    public Course( String course, String dayCourse, String timeCourse, String classroom )
     {
-        this.courseName = courseName;
-        this.instructor = instructor;
-        this.courseInfoList = new ArrayList<CourseInfo>();
+        this.course = course;
+        this.dayCourse = dayCourse;
+        this.timeCourse = timeCourse;
+        this.classroom = classroom;
     }
 
-    public void addCourseInfo( CourseInfo courseInfo )
+    public String getDayCourse()
     {
-        courseInfoList.add( courseInfo );
+        return dayCourse;
     }
 
-    public String getCourseName()
+    public void setDayCourse( String dayCourse )
     {
-        return courseName;
+        this.dayCourse = dayCourse;
     }
 
-    public void setCourseName( String courseName )
+    public String getCourse()
     {
-        this.courseName = courseName;
+        return course;
     }
 
-    public String getInstructor()
+    public void setCourse( String course )
     {
-        return instructor;
+        this.course = course;
     }
 
-    public void setInstructor( String instructor )
+    public String getTimeCourse()
     {
-        this.instructor = instructor;
+        return timeCourse;
     }
 
-    @Override
-    public boolean equals( Object obj )
+    public void setTimeCourse( String timeCourse )
     {
-        Course course = ( Course ) obj;
+        this.timeCourse = timeCourse;
+    }
 
-        return this.getCourseName().equals( ( ( Course ) obj ).getCourseName() );
+    public String getClassroom()
+    {
+        return classroom;
+    }
+
+    public void setClassroom( String classroom )
+    {
+        this.classroom = classroom;
     }
 }

@@ -8,12 +8,9 @@ public class Student
     private String userName;
     private String gender;
     private String facebookID;
+    private String password;
 
-    public Student()
-    {
-    }
-
-    public Student( String userName, String facebookID, int studentID, String firstName, String lastName, String gender )
+    public Student( String userName, String facebookID, int studentID, String firstName, String lastName, String gender, String password )
     {
         this.studentID = studentID;
         this.firstName = firstName;
@@ -21,6 +18,7 @@ public class Student
         this.userName = userName;
         this.gender = gender;
         this.facebookID = facebookID;
+        this.password = password;
     }
 
     public int getStudentID()
@@ -87,5 +85,15 @@ public class Student
     public void setGender( String gender )
     {
         this.gender = gender;
+    }
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+    public void setPassword( String password )
+    {
+        this.password = password;
     }
 }

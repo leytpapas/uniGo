@@ -5,14 +5,36 @@
          version="3.1">
 
     <servlet>
-        <servlet-name>Upload</servlet-name>
+        <servlet-name>Validate</servlet-name>
         <!-- class Name must be fully qualified -->
-        <servlet-class>UploadServlet</servlet-class>
+        <servlet-class>ValidateCheckInServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>Upload</servlet-name>
-        <url-pattern>/upload</url-pattern>
+        <servlet-name>Validate</servlet-name>
+        <url-pattern>/validate</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Rankings</servlet-name>
+        <!-- class Name must be fully qualified -->
+        <servlet-class>RankingsServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Rankings</servlet-name>
+        <url-pattern>/rankings</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Schedule</servlet-name>
+        <!-- class Name must be fully qualified -->
+        <servlet-class>ScheduleServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Schedule</servlet-name>
+        <url-pattern>/schedule</url-pattern>
     </servlet-mapping>
 
     <servlet>

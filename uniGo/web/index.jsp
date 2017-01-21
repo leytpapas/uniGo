@@ -48,11 +48,14 @@
                         <img src="images/icons/white/upload-white.png"/>
                     </label>
 
-                    <input id="file-input" type="file" name="image" accept="image/*"/>
+                    <input id="file-input" type="file" name="image" accept=".jpg,.jpeg"/>
+                    <%--accept="image/*"--%>
                     <!--<input type="submit" name="submit" value="Submit" />-->
                 </form>
 
             </div>
+            <div id="progress-wrp"><div class="progress-bar"></div ><div class="status">0%</div></div>
+            <div id="output"><!-- error or success results --></div>
             <!--<div class="user_social">-->
             <!--<a href="#" data-popup=".popup-social" class="open-popup"><img src="images/icons/white/twitter.png" alt="" title="" /></a>              -->
             <!--</div>       -->
@@ -132,16 +135,22 @@
 
                                         }
                                     %>
-                                    <div id="slider-text">Hi <%= student.getUserName() %></div>
+                                    <div id="slider-text">Hi <%= student.getUserName() %><br>Classes attended: 70% (winter semester)<br>Courses signed up: 6</div>
                                 </div>
                                 <%--<span>MOBIX <br />IS <br /> AWESOME</span>--%>
                             </div>
                             <div class="swiper-slide">
-                                <span>MOBIX <br />IS <br /> CREATIVE</span>
-                                <a href="features.html" class="swiper_read_more">see all features</a>                     </div>
+                                <div class="slider-box">
+                                    <img id="trophy" src="images/trophy.png">
+                                    <div id="slider-text">Congratulations!<br>You have attended all classes of this semester</div>
+                                </div>
+                            </div>
                             <div class="swiper-slide">
-                                <span>MOBIX <br />IS <br /> ADAPTABLE</span>
-                                <a href="#" class="swiper_read_more open-popup" data-popup=".popup-menu">start navigating</a>                      </div>
+                                <div class="slider-box">
+                                    <img id="reward" src="images/giftbox.png">
+                                    <a href="#" class="swiper_read_more open-popup" onclick="alert('An e-mail is being sent to you with more details')">Click Here to get rewards</a>
+                                </div>
+                            </div>
                         </div>
                         <div class="swiper-pagination"></div>
                     </div>
@@ -156,10 +165,10 @@
             <div class="toolbar-inner">
                 <ul class="toolbar_icons">
                     <li><a href="#" data-panel="left" class="open-panel"><img src="images/icons/white/user.png" alt="" title=""/></a></li>
-                    <li><a href="photos.html"><img src="images/icons/white/tables.png" alt="" title=""/></a></li>
+                    <li><a href="schedule"><img src="images/icons/white/tables.png" alt="" title=""/></a></li>
                     <li class="menuicon"><a href="checkin.html"><img src="images/map-white.png" alt="" title=""/></a></li>
                     <li><a href="announcements"><img src="images/icons/white/blog.png" alt="" title=""/></a></li>
-                    <li><a href="rankings.html"><img src="images/icons/white/slider.png" alt="" title=""/></a></li>
+                    <li><a href="rankings"><img src="images/icons/white/slider.png" alt="" title=""/></a></li>
                 </ul>
             </div>
         </div>
@@ -181,6 +190,8 @@
         $('#file-input').change(function(){
 
             var imageFile = this.files[0];
+            var e = document.getElementById('progress-wrp');
+            var form_id = '#form-profile';
 
             formData.append('image', imageFile);
 
@@ -196,6 +207,18 @@
             // Read in the image file as a data URL.
             reader.readAsDataURL(imageFile);
 
+//            $.ajax({
+//                url : '/uniGo_war/imgUpload',
+//                type : 'POST',
+//                data : imageFile,
+//                processData: false,
+//                contentType: false,
+////                dataType: 'json',
+//                success : function(data) {
+//                    $('#result').innerText = data;
+//                }
+//            });
+
             $.ajax({
                 url : '/uniGo_war/imgUpload',
                 type : 'POST',
@@ -203,9 +226,40 @@
                 processData: false,
                 contentType: false,
 //                dataType: 'json',
+                xhr: function(){
+                    //upload Progress
+                    var xhr = $.ajaxSettings.xhr();
+                    if (xhr.upload) {
+                        e.style.display='block';
+
+                        //document.getElementById('input').disabled= 'true';
+                        xhr.upload.addEventListener('progress', function(event) {
+                            var percent = 0;
+                            var position = event.loaded || event.position;
+                            var total = event.total;
+                            if (event.lengthComputable) {
+                                percent = Math.ceil(position / total * 100);
+                            }
+//                        console.log('updating progressbar');
+                            //update progressbar
+                            $("#progress-wrp" +" .progress-bar").css("width", + percent +"%");
+                            $("#progress-wrp" + " .status").text(percent +"%");
+                        }, true);
+                    }
+                    return xhr;
+                },
                 success : function(data) {
                     $('#result').innerText = data;
                 }
+
+            }).done(function(res){ //
+
+                console.log('updating image completed');
+                e.style.display= 'none';
+//                document.getElementById('prof').style.display='block';
+
+                $(form_id)[0].reset(); //reset form
+                $('#result').html(res); //output response from server
             });
 
             this.value = '';

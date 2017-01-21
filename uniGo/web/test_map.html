@@ -108,6 +108,9 @@
             }
         });
     }
+    
+
+
 
 
     function checkIn(controlDiv, map) {
@@ -118,6 +121,12 @@
         controlDiv.appendChild(controlUI);
 
 
+        var button0=document.createElement("div");
+        button0.setAttribute("id" , "earnXp");
+		button0.innerHTML = "Incorrect Check IN :('";
+		var button1=document.createElement("div");
+        button1.setAttribute("id" , "earnXp");
+		button1.innerHTML = "Earned 50 XP";
         // Get the modal
         var modal = document.getElementById('myModal');
 
@@ -125,18 +134,62 @@
         var span = document.getElementsByClassName("close")[0];
 
         var confirm = document.createElement('img');
+
         // When the user clicks on <span> (x), close the modal
         span.onclick = function() {
             modal.style.display = "none";
+			if(button1.style.display=="block"){
+				button1.click();
+				button1.style.display = "none";
+			}else
+				button0.style.display = "none";
         }
 
         // When the user clicks anywhere outside of the modal, close it
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = "none";
+                if(button1.style.display=="block"){
+					button.click();
+					button1.style.display = "none";
+				}else
+					button0.style.display = "none";
             }
         }
 
+        button0.addEventListener('click', function() {
+            modal.style.display = "none";
+            button0.style.display = "none";
+        });
+		button1.addEventListener('click', function() {
+			
+			$.ajax({
+                        type: 'post',
+                        url: '/uniGo_war/validate',
+                        data: {
+                            valid: 'test'
+                        },
+                        success: function (response) {
+							alert(response)
+//                            if ( response == 'OK' )
+//                            {
+//                                $( '.signup_bottom' ).html( response );
+//
+//                                localStorage.userID = name;
+//
+//                                document.getElementById( "cl-pop" ).click();
+//                            }
+//                            else
+//                            {
+//                                error = '<p style="color:firebrick;font-size: larger" class="error_login">' + response + '</p>';
+//                                $( '.signup_bottom' ).html( error );
+//                            }
+                        }
+                    });
+			
+            modal.style.display = "none";
+            button1.style.display = "none";
+        });
 
 
         // Setup the click event listeners: simply set the map to university.
@@ -164,6 +217,7 @@
                     var curPosition = new google.maps.LatLng(pos.lat, pos.lng);
 
                     confirm.setAttribute('src', 'images/nocheck.png');
+                    
                     var flag=false;
                     for(var i=0; i < triangleCoords.length; i++) {
                         if ( google.maps.geometry.poly.containsLocation(curPosition , bermudaTriangle[i]) ){
@@ -173,13 +227,19 @@
                             // When the user clicks on the button, open the modal
 
                             confirm.setAttribute('src', 'images/check.png');
-
+							flag=true;
+							break;
                         }
                     }
-
+					if(!flag){
+						modal.firstElementChild.firstElementChild.appendChild(button0);
+						button0.style.display = "block";
+					}else{
+						modal.firstElementChild.firstElementChild.appendChild(button1);
+						button1.style.display = "block";
+					}
                     modal.firstElementChild.firstElementChild.appendChild(confirm);
                     modal.style.display = "block";
-
 
                 }, function() {
                     handleLocationError(true,  map.getCenter());
@@ -293,7 +353,6 @@
         // constructor passing in this DIV.
         var centerControlDiv = document.createElement('div');
         //var centerControl = new CenterControl(centerControlDiv, map);
-
         var CheckIn = new checkIn(centerControlDiv, map);
         centerControlDiv.index = 1;
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
@@ -304,6 +363,8 @@
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDbFAAXlBKqQajVIxCbLBF-lz2ZIHp2Jg&callback=initMap">
 </script>
+<script type="text/javascript" src="js/jquery-1.10.1.min.js"></script>
+
 </body>
 
 </html>

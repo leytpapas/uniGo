@@ -179,6 +179,27 @@ div#checkInButton {
     cursor: pointer;
 }
 
+div#earnXp {
+    background-color: #833545;
+    position: fixed;
+    top: 80%;
+    width: 40%;
+    left: 30%;
+    display: inline-block;
+    color: #FFFFFF;
+    padding: 10px 0;
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    text-align: center;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 2px 7px 19px 2px black;
+    -moz-box-shadow: 2px 7px 19px 2px black;
+    box-shadow: 2px 7px 19px 2px black;
+    cursor: pointer;
+}
+
 p.error_login {
     text-align: center;
     position: relative;
@@ -274,6 +295,32 @@ a.button_small {
     color: #fff;
 }
 
+#progress-wrp {
+    display: none;
+    border: 1px solid #0099CC;
+    padding: 1px;
+    position: relative;
+    border-radius: 3px;
+    margin: 10px;
+    text-align: left;
+    background: #fff;
+    box-shadow: inset 1px 3px 6px rgba(0, 0, 0, 0.12);
+}
+#progress-wrp .progress-bar{
+    height: 20px;
+    border-radius: 3px;
+    background-color: #f39ac7;
+    width: 0;
+    box-shadow: inset 1px 1px 10px rgba(0, 0, 0, 0.11);
+}
+#progress-wrp .status{
+    top:3px;
+    left:50%;
+    position:absolute;
+    display:inline-block;
+    color: #000000;
+}
+
 /*===============================================*/
 /* 4. LEFT AND RIGHT SLIDE PANELS */
 /*===============================================*/
@@ -286,7 +333,7 @@ a.button_small {
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     position: absolute;
-    width: 280px;
+    width: 50%;
     top: 0;
     height: 100%;
     -webkit-transform: translate3d(0, 0, 0);
@@ -667,13 +714,24 @@ ul.toolbar_icons li.menuicon img {
     height: 90%;
 }
 
+.swiper-slide div img#trophy
+{
+	height: 45%;
+	display: block;
+}
+
+.swiper-slide div img#reward
+{
+	display: block;
+	height: 45%;
+}
+
 .swiper-slide div div#slider-text
 {
     /* float: left; */
     color: white;
     text-align: center;
-    padding-right: 10%;
-    padding-top: 8%;
+    padding-top: 5%;
 }
 
 .swiper-slide .slider-box {
@@ -891,7 +949,13 @@ div#map_container {
 
 .nav_right_button a#nav-top2 {
     height: 100%;
-    width: 100%;
+    width: 50%;
+    display: block;
+}
+
+.nav_right_button a#nav-top3 {
+    height: 100%;
+    width: 50%;
     display: block;
 }
 
@@ -904,6 +968,7 @@ div#map_container {
     padding: 0px 0 0px 5%;
 
 }
+
 
 .nav_right_button {
     /*float: right;*/
@@ -931,8 +996,18 @@ div#map_container {
 
     float: right;
     max-width: 100%;
-    max-height: 90%;
+    max-height: 100%;
 }
+
+/*.nav_right_button a img#nav-logo {*/
+    /*!*display: inline-block;*!*/
+    /*!*max-width: 100%;*!*/
+    /*padding: 6% 0 0 0;*/
+
+    /*float: right;*/
+    /*max-width: 100%;*/
+    /*max-height: 100%;*/
+/*}*/
 
 ul.responsive_table {
     width: 100%;
@@ -959,6 +1034,24 @@ li.table_row {
     padding: 0 0 0 2%;
 }
 
+.table_section_time {
+    width: 28%;
+    float: left;
+    padding: 0 0 0 2%;
+}
+
+.table_section_course {
+    width: 40%;
+    float: left;
+    padding: 0 0 0 2%;
+}
+
+.table_section_classroom {
+    width: 24%;
+    float: left;
+    padding: 0 0 0 2%;
+}
+
 .table_section {
     width: 40%;
     float: left;
@@ -966,7 +1059,16 @@ li.table_row {
 }
 
 .table_section_14 {
-    width: 23%;
+    /*width: 23%;*/
+    width: 76%;
+    float: left;
+    padding: 0 0 0 2%;
+    text-align: center;
+    display: block;
+}
+
+.table_section_13 {
+    width: 19%;
     float: left;
     padding: 0 0 0 2%;
     text-align: center;
@@ -2197,6 +2299,15 @@ a.signup_twitter {
         /*padding: 10px 0 0 0;*/
         /*padding: 7px 0 0 0;*/
 
+    }
+    .nav_right_button a img#nav-logo {
+        /*display: inline-block;*/
+        /*max-width: 100%;*/
+        padding: 6% 0 0 0;
+
+        float: right;
+        max-width: 100%;
+        max-height: 100%;
     }
 
     .nav_right_button a {
