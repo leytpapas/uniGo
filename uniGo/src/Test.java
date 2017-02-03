@@ -41,8 +41,8 @@ public class Test
 
         org.jsoup.Connection.Response loginForm2;
 
-        String userName = "aptsaous";
-        String password = "iNFUTH2012";
+        String userName = "user";
+        String password = "pass";
         String wp_submit = "";
         String redirect_to = "https://www.e-ce.uth.gr";// doc.getElementsByAttributeValue( "name", "redirect_to" ).first().val();
 //        .cookie( "login", "True" )
