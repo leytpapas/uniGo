@@ -38,7 +38,7 @@
             <img id="prof" src="<%= image %>" alt="" title=""/>
 
             <div class="user_details">
-                <p>Hi, <span id="dok"><%= student.getUserName() %></span></p>
+                <p>Hi, <span id="dok">${sessionScope["user"].userName}</span></p>
             </div>
             <div id="result"></div>
             <div class="user_social">
