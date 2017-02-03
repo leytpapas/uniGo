@@ -45,7 +45,6 @@ public class Test
         String password = "pass";
         String wp_submit = "";
         String redirect_to = "https://www.e-ce.uth.gr";// doc.getElementsByAttributeValue( "name", "redirect_to" ).first().val();
-//        .cookie( "login", "True" )
 
         try
         {
